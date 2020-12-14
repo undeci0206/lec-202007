@@ -7,4 +7,5 @@ import kr.or.ddit.vo.MemberVO;
  */
 public interface IMemberDAO {
 	public MemberVO selectMember(String mem_id);
+	//주석
 }
