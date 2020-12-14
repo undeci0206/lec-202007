@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd" >
+<tiles-definitions>
+  <definition name = "parent" template="/WEB-INF/views/template.jsp">
+  	<put-attribute name="preScript" value="/includee/preScript.jsp"/>
+  	<put-attribute name="topMenu" value="/includee/topMenu.jsp"/>
+  	<put-attribute name="leftMenu" value="/includee/leftMenu.jsp"/>
+  	<put-attribute name="footer" value="/includee/footer.jsp"/>
+  </definition>
+
+  <definition name="btsForm" extends="parent">
+  	<put-attribute name="contents" value="/WEB-INF/views/btsForm.jsp"></put-attribute>
+  </definition>
+  <definition name="index" extends="parent">
+  	<put-attribute name="contents" value="/WEB-INF/views/index.jsp"></put-attribute>
+  </definition>
+  <definition name="login/loginForm" extends="parent">
+  	<put-attribute name="contents" value="/WEB-INF/views/login/loginForm.jsp"></put-attribute>
+  </definition>
+  <definition name="bts/*" extends="parent">
+  	<put-attribute name="contents" value="/WEB-INF/views/bts/{1}.jsp"></put-attribute>
+  </definition>
+   <definition name="others/*" extends="parent">
+  	<put-attribute name="contents" value="/WEB-INF/views/others/{1}.jsp"></put-attribute>
+  </definition>
+  <definition name="model1/**" extends="parent">
+  	<put-attribute name="contents" value="/{1}"/>
+  </definition>
+</tiles-definitions>

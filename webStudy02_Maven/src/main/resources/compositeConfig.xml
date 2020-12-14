@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+	<entry key="template">/WEB-INF/views/layout.jsp</entry>
+	<entry key="preScript">/includee/preScript.jsp</entry>
+	<entry key="topMenu">/includee/topMenu.jsp</entry>
+	<entry key="leftMenu">/includee/leftMenu.jsp</entry>
+	<entry key="footer">/includee/footer.jsp</entry>
+	<entry key="contents">/WEB-INF/views/${logicalView}.jsp</entry>
+</properties>

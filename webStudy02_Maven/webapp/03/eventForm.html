@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src = "https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<!-- 
+reset : 클릭이라는 이벤트 발생 + reset고유의 기능 
+submit 이벤트의 target : form
+reset 이벤트의 target : form
+-->
+<form onsubmit="alert(event.target); return false;" onreset="alert(event.target); return false;" >
+	<input type="text" name = "sample">
+	<button type="button" >BUTTON</button>
+	<button type="submit" >SUBMIT</button>
+	<button type="reset" >RESET</button>
+</form>
+<script type="text/javascript">
+	$("button").on("click", function(){
+		alert($(this).text());
+	});
+</script>
+</body>
+</html>
