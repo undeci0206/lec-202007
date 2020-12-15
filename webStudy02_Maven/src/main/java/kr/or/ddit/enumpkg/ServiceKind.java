@@ -31,6 +31,10 @@ public enum ServiceKind{
 	SESSIONTIMER(MenuVO.getBuilder()
 			.menuText("세션타이머")
 			.menuURI("/sessionTimer.do")
+			.build()),
+	IMAGELIST(MenuVO.getBuilder()
+			.menuText("imageList")
+			.menuURI("/imageList")
 			.build());
 	
 	private MenuVO menu;
@@ -42,9 +46,4 @@ public enum ServiceKind{
 	public MenuVO getMenu() {
 		return menu;
 	}
-	
-	
-	
-	
-
 }

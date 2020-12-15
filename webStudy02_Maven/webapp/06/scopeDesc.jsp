@@ -14,7 +14,7 @@
 	1. page Scope : pageContext가 관리하는 맵, 한 페이지 내에서만 공유되는 영역.
 	2. request Scope : request가 관리하는 Map&lt;String,Object&gt;, request와 생명주기 동일.
 	3. session Scope : session이 관리하는 Map&lt;String,Object&gt;, session과 생명주기 동일.
-	4. application Scope : servletContext가 관리하는 Map&lt;String,Object&gt;, servletContext와 생명주기 동일.
+	4. application Scope : servletContext가 관리하는 Map&lt;String,Object&gt;, servletContext와 생명주기 동일.//////////
 </pre>
-</body>
+</body>   
 </html>

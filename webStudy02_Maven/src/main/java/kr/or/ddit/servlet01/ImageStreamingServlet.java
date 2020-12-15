@@ -3,13 +3,21 @@ package kr.or.ddit.servlet01;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLEncoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import kr.or.ddit.utils.CookieUtils;
+import kr.or.ddit.utils.CookieUtils.TextType;
 
 /**
  * Servlet implementation class imageStreamingServlet
@@ -17,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/imageView.do")
 public class ImageStreamingServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	public static final String COOKIENAME = "imgCookie";
        
 	File folder;
     @Override
@@ -27,6 +36,28 @@ public class ImageStreamingServlet extends HttpServlet {
     	folder = new File(contentFolder);
     }
 	
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		try(
+			InputStream is = req.getInputStream();
+		){
+			ObjectMapper mapper = new ObjectMapper();
+			String[] array = mapper.readValue(is, String[].class); //마샬링 시 배열 타입의 스트링을 json으로 만들어줬으니 반대로.
+
+			String jsonValue = mapper.writeValueAsString(array);//다시 마샬링
+			//""쿼테이션 있으므로 인코딩해서 넘기기
+			String encodedValue = URLEncoder.encode(jsonValue, "UTF-8");
+
+//			Cookie imageCookie = new Cookie(COOKIENAME, encodedValue);
+//			imageCookie.setMaxAge(60*60*24*3); //3일
+//			imageCookie.setPath(req.getContextPath());
+//			resp.addCookie(imageCookie);
+			
+			Cookie imageCookie = CookieUtils.createCookie(COOKIENAME, jsonValue, req.getContextPath(), TextType.PATH, 60*60*24*3);
+			resp.addCookie(imageCookie);
+		}
+	}
+    
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */

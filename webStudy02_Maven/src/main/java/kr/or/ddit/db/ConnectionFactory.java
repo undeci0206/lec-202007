@@ -42,6 +42,7 @@ public class ConnectionFactory {
 			ds.setDriverClassName(driverClassName);
 			ds.setUrl(url);
 			ds.setUsername(user);
+			ds.setPassword(password);
 			ds.setInitialSize(initialSize);
 			ds.setMaxWaitMillis(maxWait);
 			ds.setMaxTotal(maxActive);

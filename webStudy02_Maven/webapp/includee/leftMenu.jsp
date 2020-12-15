@@ -8,33 +8,27 @@
 </form>  
       <div class="position-sticky pt-3 m-3" >
         <ul class="nav flex-column menuUl">
-              <%
-				ServiceKind[] kinds = ServiceKind.values();
-				for(ServiceKind service : kinds){
-					boolean model2 = StringUtils.isNotBlank(service.getMenu().getMenuURI());
-			  %>
-        	  <li class="nav-item">
-              
-               <% 
-				if(model2){ //바로 요청이 넘어가야 함
-					%>
-					<a class="nav-link active" aria-current="page" href="<%=request.getContextPath() %><%=service.getMenu().getMenuURI()%>">
-					<%=service.name() %>
-					</a>
-					<%
-					
-				}else{ //form타고 요청이 넘어가야 함
-					%>
-					<a class="nav-link active model1" aria-current="page" data-service="<%=service.name() %>">
-					<%=service.getMenu().getMenuText() %>
-					</a>					
-					<%
-				}
-				%>
-         	   </li>
-			<%
-				}
+        <%
+		ServiceKind[] kinds = ServiceKind.values();
+		for(ServiceKind service : kinds){
+			boolean model2 = StringUtils.isNotBlank(service.getMenu().getMenuURI());
 			%>
+			<li class="nav-item">
+				<%
+					if(model2){
+						%>
+						<a class="nav-link" href="<%=request.getContextPath() %><%=service.getMenu().getMenuURI() %>"><%=service.getMenu().getMenuText() %></a>
+						<%					
+					}else{
+						%>
+						<a class="nav-link model1" href="#" data-service="<%=service.name() %>"><%=service.getMenu().getMenuText() %></a>
+						<%					
+					}
+				%>
+			</li>
+			<%
+		}
+		%>
         </ul>
       </div>
 

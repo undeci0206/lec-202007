@@ -8,19 +8,21 @@ import java.sql.SQLException;
 import kr.or.ddit.db.ConnectionFactory;
 import kr.or.ddit.vo.MemberVO;
 
-public class MemberDAOImpl implements IMemberDAO {
+public class MemberDAOImpl implements IMemberDAO {    
 
 	@Override
 	public MemberVO selectMember(String mem_id) {
-		StringBuffer sql = new StringBuffer();
-		sql.append(" SELECT MEM_ID ,MEM_PASS      ,MEM_NAME        ,MEM_REGNO1      ,MEM_REGNO2      ,TO_CHAR(MEM_BIR, 'YYYY-MM-DD') MEM_BIR,       "
-				+ ",MEM_ZIP         ,MEM_ADD1        ,MEM_ADD2        ,MEM_HOMETEL     ,MEM_COMTEL"
-				+ " ,MEM_HP          ,MEM_MAIL        ,MEM_JOB         ,MEM_LIKE     "
-				+ " ,MEM_MEMORIAL    ,TO_CHAR(MEM_MEMORIALDAY, 'YYYY-MM-DD') MEM_MEMORAILDAY, "
-				+ ",MEM_MILEAGE     ,MEM_DELETE       ");
-		sql.append(" FROM MEMBER ");
-		sql.append(" WHERE MEM_ID = ? ");
-		
+		StringBuffer sql = new StringBuffer();                             
+		sql.append(" SELECT                                                 										");
+		sql.append("     MEM_ID,    MEM_PASS,    MEM_NAME,                 												 ");
+		sql.append("     MEM_REGNO1,    MEM_REGNO2,    TO_CHAR(MEM_BIR, 'YYYY-MM-DD') MEM_BIR,          				   ");
+		sql.append("     MEM_ZIP,    MEM_ADD1,    MEM_ADD2,                														 ");
+		sql.append("     MEM_HOMETEL,    MEM_COMTEL,    MEM_HP,            												 ");
+		sql.append("     MEM_MAIL,    MEM_JOB,    MEM_LIKE,               											  ");
+		sql.append("     MEM_MEMORIAL,    TO_CHAR(MEM_MEMORIALDAY, 'YYYY-MM-DD') MEM_MEMORIALDAY,    MEM_MILEAGE,  ");
+		sql.append("     MEM_DELETE   													 ");
+		sql.append(" FROM    MEMBER                                        											 ");
+		sql.append(" WHERE MEM_ID = ? 																				");
 		MemberVO member = null;
 		//1. connection 받아오기
 		try(
@@ -62,7 +64,7 @@ public class MemberDAOImpl implements IMemberDAO {
 						.mem_delete(rs.getString("MEM_DELETE"))
 						.build();
 			}
-			return member;
+			return member;       
 		}catch(SQLException e) {
 		//예외를 톰캣에게 넘김.
 		//throw new RuntimeException(); 이렇게 쓰면 안됨(원본 예외를 전달해주기 위해) 
