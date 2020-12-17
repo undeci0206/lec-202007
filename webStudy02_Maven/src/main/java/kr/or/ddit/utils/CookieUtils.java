@@ -1,7 +1,6 @@
 package kr.or.ddit.utils;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Enumeration;
@@ -12,9 +11,9 @@ import java.util.Map;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
  * 쿠키 생성과 쿠키 조회를 지원하는 유틸리티
+ *
  */
 public class CookieUtils {
 	private HttpServletRequest request;
@@ -29,7 +28,7 @@ public class CookieUtils {
 			}
 		}
 	}
-	
+
 	/**
 	 * 전체 쿠키를 가진 맵 조회
 	 * @return
@@ -45,21 +44,19 @@ public class CookieUtils {
 	public Enumeration<String> getCookieNames() {
 		final Iterator<String> keyIt = cookieMap.keySet().iterator();
 		return new Enumeration<String>() {
-
 			@Override
 			public boolean hasMoreElements() {
 				return keyIt.hasNext();
 			}
-
+			
 			@Override
 			public String nextElement() {
 				return keyIt.next();
 			}
 		};
 	}
-	
+
 	/**
-	 * 쿠키 포함 여부 조회
 	 * @param name
 	 * @return
 	 */
@@ -77,7 +74,7 @@ public class CookieUtils {
 	}
 	
 	/**
-	 * 쿠키의 값 조회
+	 * UTF-8로 디코딩된 쿠키 값 조회
 	 * @param name
 	 * @return
 	 * @throws IOException
@@ -89,35 +86,39 @@ public class CookieUtils {
 		}
 		return value;
 	}
-	
+
 	/**
 	 * @param name
-	 * @param value URL encoding방식으로 인코딩됨
+	 * @param value URL encoding 방식으로 인코딩됨.
 	 * @return
 	 * @throws IOException
 	 */
-	public static Cookie createCookie(String name, String value) throws IOException{
-		//쿠키 생성 과정에서 인코딩 미리 해버리자
-		value = URLEncoder.encode(value, "UTF-8");
-		return new Cookie(name, value);
+	public static Cookie createCookie(String name, String value) throws IOException {
+		return createCookie(name, value, null, null, -1, false, false);
 	}
+	/**
+	 * @param name
+	 * @param value
+	 * @param maxAge 초단위 만료 시간
+	 * @return
+	 * @throws IOException
+	 */
+	public static Cookie createCookie(String name, String value, int maxAge) throws IOException {
+		Cookie cookie = createCookie(name, value);
+		cookie.setMaxAge(maxAge);
+		return cookie;
+	}
+	
+	public static enum TextType{ PATH, DOMAIN }
 	
 	/**
 	 * @param name
 	 * @param value
-	 * @param MaxAge 초단위 만료 시간
+	 * @param text 경로나 도메인으로 사용할 텍스트
+	 * @param flag text 파라미터의 사용 속성을 결정할 타입
 	 * @return
 	 * @throws IOException
 	 */
-	public static Cookie createCookie(String name, String value, int MaxAge) throws IOException{
-		Cookie cookie = createCookie(name, value);
-		//더해서 MaxAge설정
-		cookie.setMaxAge(MaxAge);
-		return cookie;
-	}
-
-	public static enum TextType{ PATH, DOMAIN }
-	
 	public static Cookie createCookie(String name, String value, 
 			String text, TextType flag) throws IOException {
 		if(TextType.PATH.equals(flag)) {
@@ -129,6 +130,15 @@ public class CookieUtils {
 		}
 	}
 	
+	/**
+	 * @param name
+	 * @param value
+	 * @param text 경로나 도메인으로 사용할 텍스트
+	 * @param flag text 파라미터의 사용 속성을 결정할 타입
+	 * @param maxAge
+	 * @return
+	 * @throws IOException
+	 */
 	public static Cookie createCookie(String name, String value, 
 			String text, TextType flag, int maxAge) throws IOException {
 		Cookie cookie = createCookie(name, value, text, flag);
@@ -136,25 +146,61 @@ public class CookieUtils {
 		return cookie;
 	}
 	
+	/**
+	 * @param name
+	 * @param value
+	 * @param path 
+	 * @param maxAge
+	 * @return
+	 * @throws IOException
+	 */
 	public static Cookie createCookie(String name, String value, 
 			String path, int maxAge) throws IOException {
 		return createCookie(name, value, path, null, maxAge, false, false);
 	}
 	
+	/**
+	 * @param name
+	 * @param value
+	 * @param path
+	 * @param domain
+	 * @return
+	 * @throws IOException
+	 */
 	public static Cookie createCookie(String name, String value, 
 			String path, String domain) throws IOException {
 		return createCookie(name, value, path, domain, -1, false, false);
 	}
 	
+	/**
+	 * @param name
+	 * @param value
+	 * @param path
+	 * @param domain
+	 * @param maxAge
+	 * @return
+	 * @throws IOException
+	 */
 	public static Cookie createCookie(String name, String value, 
 			String path, String domain, int maxAge) throws IOException {
 		return createCookie(name, value, path, domain, maxAge, false, false);
 	}
 	
+	/**
+	 * @param name
+	 * @param value
+	 * @param path
+	 * @param domain
+	 * @param maxAge
+	 * @param httpOnly
+	 * @param secure
+	 * @return
+	 * @throws IOException
+	 */
 	private static Cookie createCookie(String name, String value, 
 			String path, String domain, int maxAge, boolean httpOnly, boolean secure)
 	throws IOException
-	{
+    {
 		value = URLEncoder.encode(value, "UTF-8");
 		Cookie cookie = new Cookie(name, value);
 		if(path!=null && !path.isEmpty()) cookie.setPath(path);
@@ -165,3 +211,15 @@ public class CookieUtils {
 		return cookie;
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,5 +1,5 @@
 package kr.or.ddit.enumpkg;
 
 public enum ServiceResult {
-	OK, NOTEXIST, INVALIDPASSWORD
+	OK, FAILED, NOTEXIST, INVALIDPASSWORD, PKDUPLICATED
 }

@@ -7,7 +7,7 @@ import kr.or.ddit.utils.SecurityUtils;
 import kr.or.ddit.vo.MemberVO;
 
 public class AuthenticateServiceImpl implements IAuthenticateService {
-	IMemberDAO dao = new MemberDAOImpl();
+	IMemberDAO dao = MemberDAOImpl.getInstance();
 	
 	@Override
 	public Object authenticate(MemberVO paramVO) {

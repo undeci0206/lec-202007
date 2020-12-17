@@ -32,7 +32,4 @@
     <servlet-name>ImageListServlet</servlet-name>
     <url-pattern>/01/imageList.tmpl</url-pattern>
   </servlet-mapping>
-  <!-- <session-config>
-    <session-timeout>2</session-timeout>
-  </session-config> -->
 </web-app>
