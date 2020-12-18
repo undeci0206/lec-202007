@@ -1,6 +1,5 @@
 package kr.or.ddit.member.service;
 
-import kr.or.ddit.enumpkg.ServiceResult;
 import kr.or.ddit.vo.MemberVO;
 
 public interface IAuthenticateService { //인증 처리를 위한 로직 갖게

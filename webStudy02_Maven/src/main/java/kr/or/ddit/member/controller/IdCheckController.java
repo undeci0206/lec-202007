@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 
 import kr.or.ddit.enumpkg.ServiceResult;
+import kr.or.ddit.member.UserNotFoundException;
 import kr.or.ddit.member.service.IMemberService;
 import kr.or.ddit.member.service.MemberServiceImpl;
-import kr.or.ddit.vo.MemberVO;
 
 @WebServlet("/member/idCheck.do")
 public class IdCheckController extends HttpServlet{
@@ -27,8 +27,12 @@ public class IdCheckController extends HttpServlet{
 			resp.sendError(400);
 			return;
 		}
-		
-		boolean canUse= service.retrieveMember(inputId)==null;
+		boolean canUse = false;
+		try {
+			service.retrieveMember(inputId);
+		}catch (UserNotFoundException e) {
+			canUse = true;
+		}
 		resp.setContentType("text/plain");
 		try(
 			PrintWriter out = resp.getWriter();	
@@ -37,14 +41,4 @@ public class IdCheckController extends HttpServlet{
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
 

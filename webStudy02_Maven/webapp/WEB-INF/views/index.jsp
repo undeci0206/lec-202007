@@ -28,7 +28,7 @@ Welcome page
    if(authMember!=null){
       %>
       <form name="logoutForm" method="post"></form>
-      <%=authMember.getMem_name() %>님 <a href="#" onclick="clickHandler(event);" data-href="<%=request.getContextPath()%>/login/logout.do">로그아웃</a>
+      <a href="<%=request.getContextPath() %>/mypage.do"><%=authMember.getMem_name() %></a>님 <a href="#" onclick="clickHandler(event);" data-href="<%=request.getContextPath()%>/login/logout.do">로그아웃</a>
       <%
    }else{
       %>

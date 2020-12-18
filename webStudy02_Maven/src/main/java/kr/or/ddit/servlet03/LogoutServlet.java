@@ -22,7 +22,7 @@ public class LogoutServlet extends HttpServlet{
    @Override
    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
       HttpSession session = req.getSession();
-
+      
       //현재 세션자체를 만료시켜야 함 -> 각 세션을 식별하기 위해 존재하는 세션의 id를 없애줌
       //세션식별시 id가 있다는 것..나중에 세션 id에 대해 뜯어보자.
       session.invalidate();

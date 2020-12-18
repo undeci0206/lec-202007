@@ -9,11 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.sun.swing.internal.plaf.metal.resources.metal;
-
-import kr.or.ddit.dbprop.dao.LoginTestDAO;
 import kr.or.ddit.enumpkg.ServiceResult;
 import kr.or.ddit.member.service.AuthenticateServiceImpl;
 import kr.or.ddit.member.service.IAuthenticateService;
@@ -21,11 +16,15 @@ import kr.or.ddit.vo.MemberVO;
 
 @WebServlet("/login/loginProcess.do")
 public class LoginProcessServlet extends HttpServlet{
-	IAuthenticateService service = new AuthenticateServiceImpl();
+	IAuthenticateService service = AuthenticateServiceImpl.getInstance();
+	
+	private boolean validate(String mem_id, String mem_pass) {
+		return true;
+	}
 	
 	//1.아이디 없음 2.비밀번호 오류 3.로그인 성공
-	
-//	private boolean validate(String mem_id, String mem_pass) {
+
+	//private boolean validate(String mem_id, String mem_pass) {
 		//있나없나확인
 		
 		/*//클라이언트가 보낸 데이터는 언제나 검증을 한다.
@@ -36,12 +35,8 @@ public class LoginProcessServlet extends HttpServlet{
 			resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "아이디나 비밀번호 누락");
 			return;
 		}
-*/
-//	}
-	
-	private boolean validate(String mem_id, String mem_pass) {
-		return true;
-	}
+	*/
+	//}
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -65,8 +60,11 @@ public class LoginProcessServlet extends HttpServlet{
 			String message = null;
 			if(ServiceResult.NOTEXIST.equals(result)) {
 				message = "아이디 오류, 그런 사람 없음.";
-			}else {
+			}else if(ServiceResult.INVALIDPASSWORD.equals(result)){
 				message = "비번 오류, 다시 입력하셈.";
+				session.setAttribute("mem_id", mem_id);
+			}else{
+				message = "사용자가 유효하지 않슴돠.";
 				session.setAttribute("mem_id", mem_id);
 			}
 			session.setAttribute("message", message);
