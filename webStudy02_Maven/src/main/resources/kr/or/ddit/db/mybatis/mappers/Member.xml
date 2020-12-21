@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.member.dao.IMemberDAO">
+	<sql id="searchFrag">
+		<!-- dynamic element 역할-->
+		<where>
+		 	<!-- 명확한 if문. 이제부터 조건이 시작된다는것을 명시해 줌 -->
+		 	<!-- OGNL -->
+		    <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchVO.searchWord)">
+		    	<choose>
+		    		<when test="'name'.equals(searchVO.searchType)">
+		    			INSTR(MEM_NAME, #{searchVO.searchWord}) > 0 
+		    		</when>
+		    		<when test="'address'.equals(searchVO.searchType)">
+		    			INSTR(MEM_ADD1, #{searchVO.searchWord}) > 0 
+		    		</when>
+					<otherwise>
+		    			INSTR(MEM_NAME, #{searchVO.searchWord}) > 0 
+						OR INSTR(MEM_ADD1, #{searchVO.searchWord}) > 0 
+					</otherwise>
+		    	</choose>
+		    </if>
+		 </where>
+	</sql>
+	
+	<select id="selectMemberCount" parameterType="PagingVO" resultType="int">
+	 	SELECT COUNT(*)
+	 	FROM MEMBER
+	 	<include refid="searchFrag"></include>
+	</select>
+
+	<select id="selectMemberList" parameterType="PagingVO" resultType="MemberVO">
+		SELECT B.*
+		FROM (
+			SELECT A.*, ROWNUM RNUM 
+			FROM (
+				SELECT MEM_ID, MEM_NAME, MEM_HP
+					,MEM_ADD1, MEM_MAIL, MEM_MILEAGE
+				FROM MEMBER
+				<include refid="searchFrag"></include>
+				
+				ORDER BY ROWID DESC
+			) A
+		) B
+		
+		<![CDATA[
+		WHERE RNUM >= #{startRow} AND RNUM <= #{endRow}
+		]]>
+	</select>
+
+
+	<!-- rested Map방식(Map중첩) -->
+	<!-- 수동 binding 설정 -->
+	<resultMap type="MemberVO" id="memberMap" autoMapping="true">
+		<!-- id에 binding함. 동일한 자료가 있으면 memberVO를 다시 만들지 않는다. -->
+		<id property="mem_id" column="MEM_ID"/>
+		<!-- has a 관계 : <association property=""></association> 사용-->
+		<!-- has many 관계. ofType : collection의 타입 명시-->
+		<collection property="prodList" javaType="java.util.List" ofType="ProdVO" autoMapping="true">
+			<result property="prod_id" column="PROD_ID"/>
+		</collection>
+	</resultMap>
+	
+	<select id="selectMember" parameterType="String" resultMap="memberMap">
+		 WITH CARTB AS(
+		 	SELECT DISTINCT CART_MEMBER, CART_PROD
+		 	FROM CART
+		 )
+		 SELECT                                                 										
+		     MEM_ID,    MEM_PASS,    MEM_NAME,                 											
+		     MEM_REGNO1,    MEM_REGNO2,    TO_CHAR(MEM_BIR, 'YYYY-MM-DD') MEM_BIR,          			
+		     MEM_ZIP,    MEM_ADD1,    MEM_ADD2,                											
+		     MEM_HOMETEL,    MEM_COMTEL,    MEM_HP,            											
+		     MEM_MAIL,    MEM_JOB,    MEM_LIKE,               										
+		     MEM_MEMORIAL,    TO_CHAR(MEM_MEMORIALDAY, 'YYYY-MM-DD') MEM_MEMORIALDAY,    MEM_MILEAGE,
+		     MEM_DELETE, PROD_ID, PROD_NAME, PROD_PRICE, PROD_COST, PROD_LGU   											
+		 FROM  MEMBER LEFT OUTER JOIN CARTB ON (MEM_ID = CART_MEMBER)
+		 			  LEFT OUTER JOIN PROD ON (CART_PROD = PROD_ID)                                        										
+		 WHERE MEM_ID = #{mem_id}	
+	</select>
+	
+	<update id="updateMember" parameterType="MemberVO">
+	UPDATE MEMBER                                     
+	SET                                               
+	   MEM_NAME =			#{mem_name, jdbcType=VARCHAR},                        
+	   MEM_ZIP =			#{mem_zip, jdbcType=VARCHAR},                        
+	   MEM_ADD1 =			#{mem_add1, jdbcType=VARCHAR},                        
+	   MEM_ADD2 =			#{mem_add2, jdbcType=VARCHAR},                        
+	   MEM_HOMETEL =		#{mem_hometel, jdbcType=VARCHAR},                    
+	   MEM_COMTEL =			#{mem_comtel, jdbcType=VARCHAR},                        
+	   MEM_HP =				#{mem_hp, jdbcType=VARCHAR},                        
+	   MEM_MAIL =			#{mem_mail, jdbcType=VARCHAR},                    
+	   MEM_JOB =			#{mem_job, jdbcType=VARCHAR},                        
+	   MEM_LIKE =			#{mem_like, jdbcType=VARCHAR},                        
+	   MEM_MEMORIAL =		#{mem_memorial, jdbcType=VARCHAR},                        
+	   MEM_MEMORIALDAY =	TO_DATE(#{mem_memorialday, jdbcType=DATE}, 'YYYY-MM-DD')
+	WHERE MEM_ID =			#{mem_id, jdbcType=VARCHAR}	                      
+	</update>
+	<delete id="deleteMember" parameterType="MemberVO">
+		 UPDATE MEMBER 
+		 SET MEM_DELETE = 'Y' 
+		 WHERE MEM_ID = #{mem_id, jdbcType=VARCHAR}	   
+	</delete>
+	<insert id="insertMember" parameterType="MemberVO">
+		 INSERT INTO member (                               
+	     MEM_ID, MEM_PASS,  MEM_NAME,                       
+	     MEM_REGNO1,    MEM_REGNO2,    MEM_BIR,             
+	     MEM_ZIP,    MEM_ADD1,    MEM_ADD2,                 
+	     MEM_HOMETEL,    MEM_COMTEL,    MEM_HP,             
+	     MEM_MAIL,    MEM_JOB,    MEM_LIKE,                 
+	     MEM_MEMORIAL,    MEM_MEMORIALDAY 
+	     )     
+	     VALUES (                             
+		 #{mem_id, jdbcType=VARCHAR},    #{mem_pass, jdbcType=VARCHAR},    #{mem_name, jdbcType=VARCHAR},                         
+	     #{mem_regno1, jdbcType=VARCHAR},    #{mem_regno2, jdbcType=VARCHAR},    TO_DATE(#{mem_bir, jdbcType=VARCHAR}, 'YYYY-MM-DD'),              
+	     #{mem_zip, jdbcType=VARCHAR},    #{mem_add1, jdbcType=VARCHAR},    #{mem_add2, jdbcType=VARCHAR},                                     
+	     #{mem_hometel, jdbcType=VARCHAR},    #{mem_comtel, jdbcType=VARCHAR},    #{mem_hp, jdbcType=VARCHAR},                                     
+	    #{mem_mail, jdbcType=VARCHAR},    #{mem_job, jdbcType=VARCHAR},   #{mem_like, jdbcType=VARCHAR},                                     
+	     #{mem_memorial, jdbcType=VARCHAR},    TO_DATE(#{mem_memorialday, jdbcType=VARCHAR}, 'YYYY-MM-DD')  )                
+	</insert>
+</mapper>

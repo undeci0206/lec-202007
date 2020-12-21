@@ -8,6 +8,7 @@ import kr.or.ddit.member.dao.IMemberDAO;
 import kr.or.ddit.member.dao.MemberDAOImpl;
 import kr.or.ddit.utils.SecurityUtils;
 import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.PagingVO;
 
 public class MemberServiceImpl implements IMemberService {
 	private MemberServiceImpl() { }
@@ -43,9 +44,11 @@ public class MemberServiceImpl implements IMemberService {
 	}
 
 	@Override
-	public List<MemberVO> retrieveMemberList() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<MemberVO> retrieveMemberList(PagingVO pagingVO) {
+		List<MemberVO> memberList = dao.selectMemberList(pagingVO);
+		if(memberList==null)
+			throw new UserNotFoundException();
+		return memberList;
 	}
 
 	@Override
@@ -90,6 +93,11 @@ public class MemberServiceImpl implements IMemberService {
 			result = (ServiceResult) authResult;
 		}
 		return result;
+	}
+
+	@Override
+	public int retrieveMemberCount(PagingVO<MemberVO> pagingVO) {
+		return dao.selectMemberCount(pagingVO);
 	}
 }
 

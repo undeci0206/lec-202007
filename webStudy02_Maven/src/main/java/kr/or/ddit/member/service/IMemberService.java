@@ -4,6 +4,7 @@ import java.util.List;
 
 import kr.or.ddit.enumpkg.ServiceResult;
 import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.PagingVO;
 
 /**
  * 회원 관리를 위한 Business Logic Layer
@@ -18,10 +19,17 @@ public interface IMemberService {
 	//1. ID중복 고려 2.성공 3.실패 3개의 case식별 -> enum 사용
 	public ServiceResult registMember(MemberVO member);
 	/**
-	 * 회원 목록 조회(추후 검색/페이징 기능 추가)
+	 * 목록 수 조회(totalRecord)
+	 * @param pagingVO
 	 * @return
 	 */
-	public List<MemberVO> retrieveMemberList();
+	public int retrieveMemberCount(PagingVO<MemberVO> pagingVO);
+	/**
+	 * 회원 목록 조회(추후 검색/페이징 기능 추가)
+	 * @param pagingVO TODO
+	 * @return
+	 */
+	public List<MemberVO> retrieveMemberList(PagingVO pagingVO);
 	/**
 	 * 회원 상세 조회
 	 * @param mem_id

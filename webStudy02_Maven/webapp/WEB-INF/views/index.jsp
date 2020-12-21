@@ -33,7 +33,7 @@ Welcome page
    }else{
       %>
       <a href="<%=request.getContextPath() %>/login/loginForm.do">로그인하러 가기</a>
-      <a href="">회원가입</a>
+      <a href="<%=request.getContextPath() %>/member/registMember.do">회원가입</a>
       <%
    }
 %>

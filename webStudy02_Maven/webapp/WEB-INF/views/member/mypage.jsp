@@ -81,6 +81,23 @@
 			<input type="button" value="탈퇴" class="btn btn-warning" id="removeBtn" />
 		</td>
 	</tr>
+	<tr>
+		<th>구매목록</th>
+		<td>
+			<%=member.getProdList() %>
+			<table>
+				<thead>
+					<tr>
+						<th>상품코드</th>
+						<th>상품분류</th>
+						<th>상품명</th>
+						<th>구매가</th>
+						<th>판매가</th>
+					</tr>
+				</thead>
+			</table>
+		</td>
+	</tr>
 </table>
 <!-- Modal -->
 <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">

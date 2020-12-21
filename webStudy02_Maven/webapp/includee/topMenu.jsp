@@ -13,7 +13,7 @@
             <a class="nav-link" aria-current="page" href="<%=request.getContextPath() %>">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#" tabindex="-1" aria-disabled="true">회원관리</a>
+            <a class="nav-link" href="<%=request.getContextPath() %>/member/memberList.do" tabindex="-1" aria-disabled="true">회원관리</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#" tabindex="-1" aria-disabled="true">상품관리</a>
