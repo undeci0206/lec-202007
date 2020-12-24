@@ -38,7 +38,6 @@
 					,MEM_ADD1, MEM_MAIL, MEM_MILEAGE
 				FROM MEMBER
 				<include refid="searchFrag"></include>
-				
 				ORDER BY ROWID DESC
 			) A
 		) B

@@ -3,6 +3,7 @@ package kr.or.ddit.member.controller;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,6 +20,8 @@ import org.apache.commons.lang3.StringUtils;
 import kr.or.ddit.enumpkg.ServiceResult;
 import kr.or.ddit.member.service.IMemberService;
 import kr.or.ddit.member.service.MemberServiceImpl;
+import kr.or.ddit.validate.CommonValidator;
+import kr.or.ddit.validate.groups.InsertGroup;
 import kr.or.ddit.vo.MemberVO;
 
 @WebServlet("/member/registMember.do")
@@ -54,9 +57,10 @@ public class MemberInsertController extends HttpServlet{
 		}//이제 MemberVO의 값이 채워졌다. 이제 validate로 이 값이 유효한지 검증하자
 		
 		//call-by-reference
-		Map<String, String> errors = new LinkedHashMap<>();
+		Map<String, List<String>> errors = new LinkedHashMap<>();
 		req.setAttribute("errors", errors);
-		boolean valid = validate(member, errors);
+		CommonValidator<MemberVO> validator = new CommonValidator<>();
+		boolean valid = validator.validate(member, errors, InsertGroup.class);
 		String goPage = null;
 		
 		if(valid) {
@@ -112,60 +116,6 @@ public class MemberInsertController extends HttpServlet{
 	
 	}
 	
-	//숙제 //DB의 Member테이블 스키마 확인
-	//
-	private boolean validate(MemberVO member, Map<String, String> errors) {
-		boolean valid = true;
-		if (StringUtils.isBlank(member.getMem_id())) {
-			valid = false;
-			errors.put("mem_id", "아이디는 필수입력");
-		}
-		if (StringUtils.isBlank(member.getMem_pass())) {
-			valid = false;
-			errors.put("mem_pass", "비밀번호는 필수입력");
-		}else {
-			Pattern regex = Pattern.compile("^(?=.*[0-9]+)(?=.*[a-z]+)(?=.*[A-Z]+).{5,12}$");
-			Matcher matcher = regex.matcher(member.getMem_pass());
-			valid = matcher.matches();
-			if(!valid) errors.put("mem_pass", "비밀번호 형식 확인");
-		}
-		if (StringUtils.isBlank(member.getMem_name())) {
-			valid = false;
-			errors.put("mem_name", "이름는 필수입력");
-		}
-		if (StringUtils.isBlank(member.getMem_regno1())) {
-			valid = false;
-			errors.put("mem_regno1", "주민번호1는 필수입력");
-		}
-		if (StringUtils.isBlank(member.getMem_regno2())) {
-			valid = false;
-			errors.put("mem_regno2", "주민번호2는 필수입력");
-		}
-		if (StringUtils.isBlank(member.getMem_zip())) {
-			valid = false;
-			errors.put("mem_zip", "우편번호는 필수입력");
-		}
-		if (StringUtils.isBlank(member.getMem_add1())) {
-			valid = false;
-			errors.put("mem_add1", "주소1는 필수입력");
-		}
-		if (StringUtils.isBlank(member.getMem_add2())) {
-			valid = false;
-			errors.put("mem_add2", "주소2는 필수입력");
-		}
-		if (StringUtils.isBlank(member.getMem_hometel())) {
-			valid = false;
-			errors.put("mem_hometel", "집전번는 필수입력");
-		}
-		if (StringUtils.isBlank(member.getMem_comtel())) {
-			valid = false;
-			errors.put("mem_comtel", "회사전번는 필수입력");
-		}
-		if (StringUtils.isBlank(member.getMem_mail())) {
-			valid = false;
-			errors.put("mem_mail", "메일는 필수입력");
-		}
-		return valid;
-	}
+	
 }
 

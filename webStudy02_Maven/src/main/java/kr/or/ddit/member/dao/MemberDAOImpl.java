@@ -48,7 +48,7 @@ public class MemberDAOImpl implements IMemberDAO {
 	@Override
 	public int selectMemberCount(PagingVO<MemberVO> pagingVO) {
 		try(
-				SqlSession sqlSession = sqlSessionFactory.openSession();
+			SqlSession sqlSession = sqlSessionFactory.openSession();
 		){
 			IMemberDAO mapper = sqlSession.getMapper(IMemberDAO.class);
 			return mapper.selectMemberCount(pagingVO);

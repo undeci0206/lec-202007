@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.spi.LoggerFactoryBinder;
 
 import kr.or.ddit.member.service.IMemberService;
 import kr.or.ddit.member.service.MemberServiceImpl;
@@ -19,6 +22,8 @@ import kr.or.ddit.vo.SearchVO;
 
 @WebServlet("/member/memberList.do")
 public class MemberListController extends HttpServlet {
+	private static final Logger logger = LoggerFactory.getLogger(MemberListController.class);
+	
 	private IMemberService service = MemberServiceImpl.getInstance();
 	
 	@Override
@@ -27,6 +32,10 @@ public class MemberListController extends HttpServlet {
 		String pageParam = req.getParameter("page");
 		String searchType = req.getParameter("searchType");	
 		String searchWord = req.getParameter("searchWord");	
+		
+		logger.debug("currentPage : {}, searchType: {}, searchWord: {}",
+								pageParam, searchType, searchWord); //message argument기능
+		
 		
 		SearchVO searchVO = new SearchVO(searchType,searchWord);
 		

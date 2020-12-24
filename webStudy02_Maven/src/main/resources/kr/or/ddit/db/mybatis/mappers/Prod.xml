@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.prod.dao.IProdDAO">
+	<!-- 단순 검색 -->
+	<!-- where 사용 -->
+    <!-- <where>
+		    <if test="searchVO!=null and @org.apache.commons.lang3.StringUtils@isNotBlank(searchVO.searchWord)">
+		    	<choose>
+		    		<when test="'prodLgu'.equals(searchVO.searchType)">
+		    			INSTR(PROD_LGU, #{searchVO.searchWord}) > 0 
+		    		</when>
+		    		<when test="'prodName'.equals(searchVO.searchType)">
+		    			INSTR(PROD_NAME, #{searchVO.searchWord}) > 0 
+		    		</when>
+		    		<when test="'buyerName'.equals(searchVO.searchType)">
+		    			INSTR(PROD_BUYER, #{searchVO.searchWord}) > 0 
+		    		</when>
+					<otherwise>
+		    			INSTR(PROD_LGU, #{searchVO.searchWord}) > 0 
+						OR INSTR(PROD_NAME, #{searchVO.searchWord}) > 0 
+						OR INSTR(PROD_BUYER, #{searchVO.searchWord}) > 0 
+					</otherwise>
+		    	</choose>
+		    </if> 
+		 </where>
+		 
+	  -->
+	  <!-- 상세 검색 -->
+	  <!-- trim 사용. prefixOverrides, suffixOverrides : 잘못 들어간 연산자 있으면 제거해줌 -->
+	<sql id="fromClause">
+		FROM PROD INNER JOIN LPROD ON (PROD_LGU = LPROD_GU)
+		                INNER JOIN BUYER ON (PROD_BUYER = BUYER_ID)
+	</sql>
+	<sql id="searchFrag">
+		<trim prefix=" WHERE " prefixOverrides="AND">
+			<if test="searchDetail!=null">
+				<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchDetail.prod_lgu)">
+					AND	PROD_LGU = #{searchDetail.prod_lgu}
+				</if>
+				<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchDetail.prod_buyer)">
+					AND	PROD_BUYER = #{searchDetail.prod_buyer}
+				</if>
+				<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchDetail.prod_name)">
+					AND	INSTR(PROD_NAME, #{searchDetail.prod_name}) > 0
+				</if>
+			</if>
+		</trim>
+	</sql>
+	<select id="selectProdCount" parameterType="PagingVO" resultType="int">
+		SELECT COUNT(*)
+		<include refid="fromClause" /> 
+		<include refid="searchFrag" />
+	</select>
+	<select id="selectProdList" parameterType="PagingVO" resultType="ProdVO">
+		SELECT A.*
+		FROM (
+		    SELECT 
+		            PROD_ID, PROD_NAME, PROD_COST
+		            , PROD_PRICE, PROD_MILEAGE
+		            , LPROD_NM PROD_LGU 
+		            , BUYER_NAME PROD_BUYER
+		            , ROWNUM RNUM
+		    <include refid="fromClause" />
+		    <include refid="searchFrag" />
+		    ORDER BY PROD_LGU ASC, PROD_ID DESC            
+		) A
+		WHERE RNUM BETWEEN #{startRow} AND #{endRow}
+	</select>
+	<insert id="insertProd" parameterType="ProdVO">
+		<selectKey order="BEFORE" resultType="string" keyProperty="prod_id">
+			SELECT #{prod_lgu}|| LPAD(TO_NUMBER(NVL(SUBSTR(MAX(PROD_ID), 5), '0'))+1, 6, '0')
+			FROM PROD
+			WHERE PROD_LGU = #{prod_lgu}
+		</selectKey>
+		INSERT INTO PROD (
+		    PROD_ID,    PROD_NAME,
+		    PROD_LGU,    PROD_BUYER,
+		    PROD_COST,    PROD_PRICE,
+		    PROD_SALE,    PROD_OUTLINE,
+		    PROD_DETAIL,    PROD_IMG,
+		    PROD_TOTALSTOCK,    PROD_INSDATE,
+		    PROD_PROPERSTOCK,    PROD_SIZE,
+		    PROD_COLOR,    PROD_DELIVERY,
+		    PROD_UNIT,    PROD_QTYIN,
+		    PROD_QTYSALE,    PROD_MILEAGE
+		) VALUES (
+		    #{prod_id,jdbcType=VARCHAR},    #{prod_name,jdbcType=VARCHAR},
+		    #{prod_lgu,jdbcType=VARCHAR},    #{prod_buyer,jdbcType=VARCHAR},
+		    #{prod_cost,jdbcType=NUMERIC},    #{prod_price,jdbcType=NUMERIC},
+		    #{prod_sale,jdbcType=NUMERIC},    #{prod_outline,jdbcType=VARCHAR},
+		    #{prod_detail,jdbcType=CLOB},    #{prod_img,jdbcType=VARCHAR},
+		    #{prod_totalstock,jdbcType=NUMERIC},    SYSDATE,
+		    #{prod_properstock,jdbcType=NUMERIC},    #{prod_size,jdbcType=VARCHAR},
+		    #{prod_color,jdbcType=VARCHAR},    #{prod_delivery,jdbcType=VARCHAR},
+		    #{prod_unit,jdbcType=VARCHAR},    #{prod_qtyin,jdbcType=NUMERIC},
+		    #{prod_qtysale,jdbcType=NUMERIC},    #{prod_mileage,jdbcType=VARCHAR}
+	    )
+	</insert>
+	
+	<resultMap type="ProdVO" id="prodMap" autoMapping="true">
+		<id property="prod_id" column="PROD_ID"/>
+		<association property="buyer" javaType="BuyerVO" autoMapping="true" />
+		<collection property="memberList" javaType="java.util.Set" 
+											ofType="MemberVO" autoMapping="true">
+			<id property="mem_id" column="MEM_ID"/>
+		</collection>
+	</resultMap>
+	<select id="selectProd" parameterType="string" resultMap="prodMap">
+		WITH CARTR AS (
+		    SELECT DISTINCT CART_MEMBER, CART_PROD
+		    FROM CART
+		    WHERE CART_PROD = #{prod_id}
+		),
+		CARTMEM AS (
+		    SELECT CART_PROD, MEMBER.*
+		    FROM CARTR INNER JOIN MEMBER ON (CART_MEMBER = MEM_ID)
+		)
+		SELECT 
+		    PROD_ID,    PROD_NAME,    PROD_LGU,
+		    PROD_BUYER,    PROD_COST,    PROD_PRICE,
+		    PROD_SALE,    PROD_OUTLINE,    PROD_DETAIL,
+		    PROD_IMG,    PROD_TOTALSTOCK,    TO_CHAR(PROD_INSDATE, 'YYYY-MM-DD') PROD_INSDATE,
+		    PROD_PROPERSTOCK,    PROD_SIZE,    PROD_COLOR,
+		    PROD_DELIVERY,    PROD_UNIT,    PROD_QTYIN,
+		    PROD_QTYSALE,    PROD_MILEAGE
+			, LPROD_NM PROD_LGU
+			, BUYER_ID,    BUYER_NAME,    BUYER_LGU,
+		    BUYER_BANK,    BUYER_BANKNO,    BUYER_BANKNAME,
+		    BUYER_ZIP,    BUYER_ADD1,    BUYER_ADD2,
+		    BUYER_COMTEL,    BUYER_FAX,    BUYER_MAIL,
+		    BUYER_CHARGER,    BUYER_TELEXT
+			, MEM_ID, MEM_NAME, MEM_MAIL, 
+			MEM_HP, MEM_ADD1, MEM_MILEAGE
+		FROM PROD INNER JOIN BUYER ON (PROD_BUYER = BUYER_ID)
+		            INNER JOIN LPROD ON (PROD_LGU = LPROD_GU)
+		            LEFT OUTER JOIN CARTMEM ON (PROD_ID = CART_PROD)
+		WHERE PROD_ID = #{prod_id}
+	</select>
+</mapper>

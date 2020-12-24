@@ -241,28 +241,28 @@ public class MemberDAOImpl_JDBC implements IMemberDAO {
 		}
 	}
 
-		//callbyvalue, callbyreference 가 같이 쓰임
-		//callbyvalue
-		//callbyreference : return대신 쓸 수 있는 것
-		private int makeWhere(PagingVO pagingVO, StringBuffer sql) {
-			int paramIdx = 1;
-			if(StringUtils.isNotBlank(pagingVO.getSearchVO().getSearchWord())) {
-				sql.append(" WHERE ");
-				if("name".equals(pagingVO.getSearchVO().getSearchType())){
-					paramIdx++;
-					sql.append( " INSTR(MEM_NAME, ? ) > 0 " );
-				}else if("address".equals(pagingVO.getSearchVO().getSearchType())){
-					paramIdx++;
-					sql.append( " INSTR(MEM_ADD1, ? ) > 0 " );
-				}else {
-					paramIdx++;
-					sql.append( " INSTR(MEM_NAME, ? ) > 0 " );
-					paramIdx++;
-					sql.append( " OR INSTR(MEM_ADD1, ? ) > 0 " );
-				}
+	//callbyvalue, callbyreference 가 같이 쓰임
+	//callbyvalue
+	//callbyreference : return대신 쓸 수 있는 것
+	private int makeWhere(PagingVO pagingVO, StringBuffer sql) {
+		int paramIdx = 1;
+		if(StringUtils.isNotBlank(pagingVO.getSearchVO().getSearchWord())) {
+			sql.append(" WHERE ");
+			if("name".equals(pagingVO.getSearchVO().getSearchType())){
+				paramIdx++;
+				sql.append( " INSTR(MEM_NAME, ? ) > 0 " );
+			}else if("address".equals(pagingVO.getSearchVO().getSearchType())){
+				paramIdx++;
+				sql.append( " INSTR(MEM_ADD1, ? ) > 0 " );
+			}else {
+				paramIdx++;
+				sql.append( " INSTR(MEM_NAME, ? ) > 0 " );
+				paramIdx++;
+				sql.append( " OR INSTR(MEM_ADD1, ? ) > 0 " );
 			}
-			return paramIdx;
 		}
+		return paramIdx;
+	}
 
 	
 	@Override

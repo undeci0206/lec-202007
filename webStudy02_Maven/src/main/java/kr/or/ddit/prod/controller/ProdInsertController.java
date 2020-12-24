@@ -1,12 +1,10 @@
-package kr.or.ddit.member.controller;
+package kr.or.ddit.prod.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,31 +13,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import kr.or.ddit.enumpkg.ServiceResult;
-import kr.or.ddit.member.service.IMemberService;
-import kr.or.ddit.member.service.MemberServiceImpl;
+import kr.or.ddit.prod.service.IProdService;
+import kr.or.ddit.prod.service.ProdServiceImpl;
 import kr.or.ddit.validate.CommonValidator;
 import kr.or.ddit.validate.groups.InsertGroup;
-import kr.or.ddit.validate.groups.UpdateGroup;
-import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.ProdVO;
 
-@WebServlet("/member/modifyMember.do")
-public class MemberUpdateController extends HttpServlet{
-	private IMemberService service = MemberServiceImpl.getInstance();
-	
-	private void addCommandAttribute(HttpServletRequest req) {
-		req.setAttribute("command", "MODIFY");
-	}
+@WebServlet("/prod/prodInsert.do")
+public class ProdInsertController extends HttpServlet{
+	private IProdService service = ProdServiceImpl.getInstance();
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		addCommandAttribute(req);
-		MemberVO authMember = (MemberVO) req.getSession().getAttribute("authMember");
-		MemberVO member = service.retrieveMember(authMember.getMem_id());
-		req.setAttribute("member", member);
-		String goPage = "member/memberForm";
+		String goPage = "prod/prodForm";
 		
 		boolean redirect = goPage.startsWith("redirect:");
 		boolean forward = goPage.startsWith("forward:");
@@ -51,48 +39,40 @@ public class MemberUpdateController extends HttpServlet{
 			req.getRequestDispatcher("/"+goPage+".tiles").forward(req, resp);
 		}
 	}
+	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		addCommandAttribute(req);
 		req.setCharacterEncoding("UTF-8");
-		MemberVO member = new MemberVO();
-		req.setAttribute("member", member);
+		
+		ProdVO prod = new ProdVO();
+		req.setAttribute("prod", prod);
 		Map<String, String[]> parameterMap = req.getParameterMap();
 		try {
-			BeanUtils.populate(member, parameterMap);
+			BeanUtils.populate(prod, parameterMap);
 		} catch (IllegalAccessException | InvocationTargetException e) {
 			throw new ServletException(e);
 		}
 		
 		Map<String, List<String>> errors = new LinkedHashMap<>();
 		req.setAttribute("errors", errors);
-		CommonValidator<MemberVO> validator = new CommonValidator<>();
-		boolean valid = validator.validate(member, errors, UpdateGroup.class);
+		CommonValidator<ProdVO> validator = new CommonValidator<>();
+		boolean valid = validator.validate(prod, errors, InsertGroup.class);
+		
 		String goPage = null;
 		
 		if(valid) {
-			ServiceResult result = service.modifyMember(member);
+			ServiceResult result = service.createProd(prod);
 			switch (result) {
-			case INVALIDPASSWORD:
-				goPage = "member/memberForm";
-				req.setAttribute("message", "비번 오류");
-				break;
-			case FAILED:
-				goPage = "member/memberForm";
-				req.setAttribute("message", "서버 오류");
-				break;
-			default:
-				goPage =  "redirect:/mypage.do";
-				MemberVO authMember =(MemberVO) req.getSession().getAttribute("authMember");
-				try {
-					BeanUtils.copyProperties(authMember, member);
-				} catch (IllegalAccessException | InvocationTargetException e) {
-					throw new RuntimeException(e);
-				}
+				case OK:
+					goPage =  "redirect:/prod/prodList.do";
+					break;
+				default:	
+					
+					goPage = "prod/prodForm";
 				break;
 			}
 		}else {
-			goPage = "member/memberForm";
+			goPage = "prod/prodForm";
 		}
 		
 		boolean redirect = goPage.startsWith("redirect:");
@@ -104,23 +84,5 @@ public class MemberUpdateController extends HttpServlet{
 		}else{	
 			req.getRequestDispatcher("/"+goPage+".tiles").forward(req, resp);
 		}
-		
 	}
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

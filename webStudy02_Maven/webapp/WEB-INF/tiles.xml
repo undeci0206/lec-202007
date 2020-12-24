@@ -29,6 +29,9 @@
   <definition name="member/**" extends="parent">
   	<put-attribute name="contents" value="/WEB-INF/views/member/{1}.jsp"/>
   </definition>
+  <definition name="prod/**" extends="parent">
+  	<put-attribute name="contents" value="/WEB-INF/views/prod/{1}.jsp"/>
+  </definition>
   <definition name="imageList" extends="parent">
   	<put-attribute name="contents" value="/WEB-INF/views/imageList.jsp"></put-attribute>
   </definition>

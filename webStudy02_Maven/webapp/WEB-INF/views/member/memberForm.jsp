@@ -13,7 +13,7 @@
 			<th class="text-center">아이디</th>
 			<td class="pb-1">
 				<div class="input-group">
-					<input type="text" class="form-control editable" required
+					<input type="text" class="form-control editable" 
 						name="mem_id"
 						value="<%=Objects.toString(member.getMem_id(), "")%>"
 						placeholder="아이디 기록하기 전에는 빠져나갈수 없숴~" />
@@ -26,21 +26,21 @@
 		<tr>
 			<th class="text-center">비밀번호</th>
 			<td class="pb-1"><input type="text"
-				class="form-control editable" name="mem_pass" required
+				class="form-control editable" name="mem_pass" 
 				pattern="^(?=.*[0-9]+)(?=.*[a-z]+)(?=.*[A-Z]+).{5,12}$" /> <span
 				class="error"><%=errors.get("mem_pass")%></span></td>
 		</tr>
 		<tr>
 			<th class="text-center">이름</th>
 			<td class="pb-1"><input type="text"
-				class="form-control editable" required name="mem_name"
+				class="form-control editable"  name="mem_name"
 				value="<%=Objects.toString(member.getMem_name(), "")%>" /> <span
 				class="error"><%=errors.get("mem_name")%></span></td>
 		</tr>
 		<tr>
 			<th class="text-center">주민번호1</th>
 			<td class="pb-1"><input type="text" class="form-control"
-				required name="mem_regno1"
+				 name="mem_regno1"
 				value="<%=Objects.toString(member.getMem_regno1(), "")%>"
 				pattern="\d{6}" maxlength="6" /> <span class="error"><%=errors.get("mem_regno1")%></span>
 			</td>
@@ -48,7 +48,7 @@
 		<tr>
 			<th class="text-center">주민번호2</th>
 			<td class="pb-1"><input type="text" class="form-control"
-				required name="mem_regno2"
+				 name="mem_regno2"
 				value="<%=Objects.toString(member.getMem_regno2(), "")%>" size="7" />
 				<span class="error"><%=errors.get("mem_regno2")%></span></td>
 		</tr>
@@ -63,7 +63,7 @@
 			<th class="text-center">우편번호</th>
 			<td class="pb-1">
 				<div class="input-group">
-					<input type="text" class="form-control editable" required readonly
+					<input type="text" class="form-control editable"  readonly
 						name="mem_zip"
 						value="<%=Objects.toString(member.getMem_zip(), "")%>"
 						id="mem_zip" tabindex="-1" />
@@ -76,7 +76,7 @@
 		<tr>
 			<th class="text-center">주소1</th>
 			<td class="pb-1"><input type="text"
-				class="form-control editable" required readonly name="mem_add1"
+				class="form-control editable"  readonly name="mem_add1"
 				value="<%=Objects.toString(member.getMem_add1(), "")%>"
 				id="mem_add1" tabindex="-1" /> <span class="error"><%=errors.get("mem_add1")%></span>
 			</td>
@@ -84,7 +84,7 @@
 		<tr>
 			<th class="text-center">주소2</th>
 			<td class="pb-1"><input type="text"
-				class="form-control editable" required readonly name="mem_add2"
+				class="form-control editable"  readonly name="mem_add2"
 				value="<%=Objects.toString(member.getMem_add2(), "")%>"
 				id="mem_add2" tabindex="-1" /> <span class="error"><%=errors.get("mem_add2")%></span>
 			</td>
@@ -92,14 +92,14 @@
 		<tr>
 			<th class="text-center">집전번</th>
 			<td class="pb-1"><input type="text"
-				class="form-control editable" required name="mem_hometel"
+				class="form-control editable"  name="mem_hometel"
 				value="<%=Objects.toString(member.getMem_hometel(), "")%>" /> <span
 				class="error"><%=errors.get("mem_hometel")%></span></td>
 		</tr>
 		<tr>
 			<th class="text-center">회사전번</th>
 			<td class="pb-1"><input type="text"
-				class="form-control editable" required name="mem_comtel"
+				class="form-control editable"  name="mem_comtel"
 				value="<%=Objects.toString(member.getMem_comtel(), "")%>" /> <span
 				class="error"><%=errors.get("mem_comtel")%></span></td>
 		</tr>
@@ -107,13 +107,14 @@
 			<th class="text-center">휴대폰</th>
 			<td class="pb-1"><input type="text"
 				class="form-control editable" name="mem_hp"
-				value="<%=Objects.toString(member.getMem_hp(), "")%>" /> <span
+				value="<%=Objects.toString(member.getMem_hp(), "")%>" 
+				placeholder="000 000 0000"/> <span
 				class="error"><%=errors.get("mem_hp")%></span></td>
 		</tr>
 		<tr>
 			<th class="text-center">메일</th>
 			<td class="pb-1"><input type="text"
-				class="form-control editable" required name="mem_mail"
+				class="form-control editable"  name="mem_mail"
 				value="<%=Objects.toString(member.getMem_mail(), "")%>" /> <span
 				class="error"><%=errors.get("mem_mail")%></span></td>
 		</tr>
@@ -182,19 +183,19 @@
 						<span class="input-group-text" id="inputGroup-sizing-sm">우편번호</span>
 						<input readonly name="modalZipCode" type="text"
 							class="form-control" aria-label="Sizing example input"
-							aria-describedby="inputGroup-sizing-sm" tabindex="-1" required />
+							aria-describedby="inputGroup-sizing-sm" tabindex="-1"  />
 					</div>
 					<div class="input-group input-group-sm mb-3">
 						<span class="input-group-text" id="inputGroup-sizing-sm">주소1</span>
 						<input readonly name="address1" type="text" class="form-control"
 							aria-label="Sizing example input"
-							aria-describedby="inputGroup-sizing-sm" tabindex="-1" required />
+							aria-describedby="inputGroup-sizing-sm" tabindex="-1"  />
 					</div>
 					<div class="input-group input-group-sm mb-3">
 						<span class="input-group-text" id="inputGroup-sizing-sm">주소2</span>
 						<input name="address2" type="text" class="form-control"
 							aria-label="Sizing example input"
-							aria-describedby="inputGroup-sizing-sm" required />
+							aria-describedby="inputGroup-sizing-sm"  />
 					</div>
 				</div>
 				<div class="modal-footer">

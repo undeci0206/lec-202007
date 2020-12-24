@@ -26,6 +26,7 @@ public class PagingVO<T> {
 	private List<T> dataList;
 	
 	private SearchVO searchVO;
+	private T searchDetail; //generic type
 	
 public void setTotalRecord(int totalRecord) {
 	this.totalRecord = totalRecord;
